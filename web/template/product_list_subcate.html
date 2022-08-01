@@ -1,0 +1,48 @@
+<h1>Product List</h1>
+
+<div>
+    <a href='http://localhost:8080/product_list'>All Products</a> > 
+    <a href="http://localhost:8080/product_list/c/{{.CateEng}}">{{.CateReport}}</a> > 
+    <a href="http://localhost:8080/product_list/sc/{{.SubCateEng}}">{{.SubCateReport}}</a>
+</div>
+<p> </p>
+<a href='http://localhost:8080/create'><input value="Create Product" type="SUBMIT"></a>
+
+<h2>{{.SubCateReport}}</h2>
+
+<form action='/product_list/cate1' method="POST">
+    Category:
+    <select name="cate1">
+        {{range .ProductLists}}
+            <option value="{{.Cate1}}">{{.Cate1}}</option>
+        {{end}}
+    </select>
+    <input type="submit" />
+</form>
+
+<ul>
+    {{range .ProductLists}}
+        <a class='product_item' href="http://localhost:8080/p/{{.Id}}">
+        <div>
+            <div class='thumbnail'>
+                <picture class="webpimg-container">
+                    <source srcset={{.Image}}>
+                    <img src={{.Image}} 
+                        alt={{.Name}}>
+                </picture>
+            </div>
+            <div class="info">
+                <div class="product_name"><h3>{{.Name}}</h3></div>
+                <div class="price">{{.Price}}</div>
+            </div>
+        </div>
+        </a>
+        <p> </p>
+        <a href='http://localhost:8080/update/{{.Id}}'><input value="Update Product" type="SUBMIT"></a>
+        <a href='http://localhost:8080/delete/{{.Id}}'><input value="Delete Product" type="SUBMIT"></a>
+        <p> </p>
+    {{end}}
+</ul>
+
+
+

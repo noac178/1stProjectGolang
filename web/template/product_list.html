@@ -1,0 +1,39 @@
+<h1>Product List</h1>
+<a href='http://localhost:8080/create'><input value="Create Product" type="SUBMIT"></a>
+<p> </p>
+<form action='/product_list/cate' method="POST">
+    Category:
+    <select name="cate_report">
+        {{range . }}
+            <option value="{{.CateReport}}">{{.CateReport}}</option>
+        {{end}}
+    </select>
+    <input type="submit" />
+</form>
+
+<ul>
+    {{range . }}
+        <a class='product_item' href="http://localhost:8080/p/{{.Id}}">
+        <div>
+            <div class='thumbnail'>
+                <picture class="webpimg-container">
+                    <source srcset={{.Image}}>
+                    <img src={{.Image}} 
+                        alt={{.Name}}>
+                </picture>
+            </div>
+            <div class="info">
+                <div class="product_name"><h3>{{.Name}}</h3></div>
+                <div class="price">{{.Price}}</div>
+            </div>
+        </div>
+        </a>
+        <p> </p>
+        <a href='http://localhost:8080/update/{{.Id}}'><input value="Update Product" type="SUBMIT"></a>
+        <a href='http://localhost:8080/delete/{{.Id}}'><input value="Delete Product" type="SUBMIT"></a>
+        <p> </p>
+    {{end}}
+</ul>
+
+
+
