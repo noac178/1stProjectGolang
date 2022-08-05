@@ -2,10 +2,10 @@ package feature
 
 import "net/http"
 
-func updateHandler(w http.ResponseWriter, r *http.Request) {
+func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	product_id := r.URL.Path[len("/update/"):]
 
-	db, err := openDb()
+	db, err := OpenDb()
 
 	var p ProductInfo
 
@@ -13,7 +13,7 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 			cate1, cate2, color, size, brand, image FROM product_info WHERE id = ?`
 	err = db.QueryRow(query, product_id).Scan(&p.Id, &p.Sku, &p.Name, &p.Price, &p.Number, &p.CateReport, &p.SubCateReport,
 		&p.Cate1, &p.Cate2, &p.Color, &p.Size, &p.Brand, &p.Image)
-	checkErr(err)
+	CheckErr(err)
 
-	renderTemplate(w, "update", p)
+	RenderTemplate(w, "update", p)
 }

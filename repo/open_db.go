@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func openDb() (*sql.DB, error) {
+func OpenDb() (*sql.DB, error) {
 	db, err := sql.Open("mysql", "vuongnguyen3:vuong@(127.0.0.1:3306)/test_build_web_go")
 	if err != nil {
 		log.Fatal(err)

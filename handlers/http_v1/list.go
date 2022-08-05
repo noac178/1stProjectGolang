@@ -2,12 +2,12 @@ package http
 
 import "net/http"
 
-func listHandler(w http.ResponseWriter, r *http.Request) {
-	db, _ := openDb()
+func ListHandler(w http.ResponseWriter, r *http.Request) {
+	db, _ := OpenDb()
 
 	rows, err := db.Query(`SELECT id, name, price, cate_report, sub_cate_report,
 						cate1, cate2, image FROM product_info`)
-	checkErr(err)
+	CheckErr(err)
 	defer rows.Close()
 
 	var ProductList []ProductInfo
@@ -16,11 +16,11 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 
 		err := rows.Scan(&p.Id, &p.Name, &p.Price, &p.CateReport, &p.SubCateReport,
 			&p.Cate1, &p.Cate2, &p.Image)
-		checkErr(err)
+		CheckErr(err)
 		ProductList = append(ProductList, p)
 	}
 	err = rows.Err()
-	checkErr(err)
+	CheckErr(err)
 
-	renderTemplate(w, "product_list", ProductList)
+	RenderTemplate(w, "product_list", ProductList)
 }

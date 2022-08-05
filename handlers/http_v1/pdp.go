@@ -2,11 +2,11 @@ package http
 
 import "net/http"
 
-func pdpHandler(w http.ResponseWriter, r *http.Request) {
+func PdpHandler(w http.ResponseWriter, r *http.Request) {
 	product_id := r.URL.Path[len("/p/"):]
 
-	db, err := openDb()
-	checkErr(err)
+	db, err := OpenDb()
+	CheckErr(err)
 
 	var p ProductInfo
 
@@ -14,7 +14,7 @@ func pdpHandler(w http.ResponseWriter, r *http.Request) {
 			cate1, cate2, color, size, brand, image FROM product_info WHERE id = ?`
 	err = db.QueryRow(query, product_id).Scan(&p.Id, &p.Sku, &p.Name, &p.Price, &p.Number, &p.CateReport, &p.SubCateReport,
 		&p.Cate1, &p.Cate2, &p.Color, &p.Size, &p.Brand, &p.Image)
-	checkErr(err)
+	CheckErr(err)
 
 	type Page struct {
 		CateEng       string
@@ -29,14 +29,12 @@ func pdpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	page := &Page{
-		CateEng:      createPagePath(p.CateReport),
-		SubCateEng:   createPagePath(p.SubCateReport),
-		Cate1Eng:     createPagePath(p.Cate1),
-		Cate2Eng:     createPagePath(p.Cate2),
+		CateEng:      CreatePagePath(p.CateReport),
+		SubCateEng:   CreatePagePath(p.SubCateReport),
+		Cate1Eng:     CreatePagePath(p.Cate1),
+		Cate2Eng:     CreatePagePath(p.Cate2),
 		ProductInfos: p,
 	}
 
-	if err := templates.ExecuteTemplate(w, "pdp.html", page); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	RenderTemplate(w, "pdp", page)
 }

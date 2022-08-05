@@ -2,17 +2,17 @@ package http
 
 import "net/http"
 
-func filterCateHandler(w http.ResponseWriter, r *http.Request) {
+func FilterCateHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	cate_report := r.Form.Get("cate_report")
 
-	http.Redirect(w, r, "/product_list/c/"+createPagePath(cate_report), http.StatusFound)
+	http.Redirect(w, r, "/product_list/c/"+CreatePagePath(cate_report), http.StatusFound)
 }
 
-func cateHandler(w http.ResponseWriter, r *http.Request) {
+func CateHandler(w http.ResponseWriter, r *http.Request) {
 	cate_report := r.URL.Path[len("/product_list/c/"):]
 
-	db, err := openDb()
+	db, err := OpenDb()
 	rows, err := db.Query(`
 		SELECT DISTINCT id, name, price, cate_report, sub_cate_report,
 				cate1, cate2, image
@@ -23,7 +23,7 @@ func cateHandler(w http.ResponseWriter, r *http.Request) {
 			WHEN cate_report NOT LIKE '%-%' THEN LOWER(REPLACE(REPLACE(cate_report, ' - ', '-'), ' ', '-')) = ?
 			ELSE LOWER(REPLACE(REPLACE(cate_report, ' - ', '-'), ' ', '-')) = ?
 		END)`, cate_report, cate_report)
-	checkErr(err)
+	CheckErr(err)
 	defer rows.Close()
 
 	var ProductList []ProductInfo
@@ -33,12 +33,12 @@ func cateHandler(w http.ResponseWriter, r *http.Request) {
 
 		err := rows.Scan(&p.Id, &p.Name, &p.Price, &p.CateReport, &p.SubCateReport,
 			&p.Cate1, &p.Cate2, &p.Image)
-		checkErr(err)
+		CheckErr(err)
 
 		ProductList = append(ProductList, p)
 	}
 	err = rows.Err()
-	checkErr(err)
+	CheckErr(err)
 
 	query := `
 		SELECT
@@ -54,7 +54,7 @@ func cateHandler(w http.ResponseWriter, r *http.Request) {
 
 	var p ProductInfo
 	err = db.QueryRow(query, cate_report, cate_report).Scan(&p.CateReport)
-	checkErr(err)
+	CheckErr(err)
 
 	type Page struct {
 		CateEng       string
@@ -74,5 +74,5 @@ func cateHandler(w http.ResponseWriter, r *http.Request) {
 		CateReport:   p.CateReport,
 	}
 
-	renderTemplate(w, product_list_cate, page)
+	RenderTemplate(w, "product_list_cate", page)
 }
