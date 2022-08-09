@@ -1,7 +1,6 @@
 package feature
 
 import (
-	"Minipj/1stProjectGolang/pkg/errorx"
 	"net/http"
 
 	"github.com/noac178/1stProjectGolang/pkg/errorx"

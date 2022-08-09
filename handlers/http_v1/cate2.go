@@ -17,7 +17,7 @@ func FilterCate2Handler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/product_list/c2/"+pagepath.CreatePagePath(cate2), http.StatusFound)
 }
 
-func cate2Handler(w http.ResponseWriter, r *http.Request) {
+func Cate2Handler(w http.ResponseWriter, r *http.Request) {
 	cate2 := r.URL.Path[len("/product_list/c2/"):]
 
 	db, err := repo.OpenDb()

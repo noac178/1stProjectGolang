@@ -1,7 +1,6 @@
 package save
 
 import (
-	"Minipj/1stProjectGolang/pkg/errorx"
 	"net/http"
 
 	"github.com/noac178/1stProjectGolang/pkg/errorx"
@@ -24,7 +23,7 @@ func SaveUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	brand := r.FormValue("brand")
 	image := r.FormValue("image")
 
-	db, err := repo.OpenDb()
+	db, _ := repo.OpenDb()
 	updateInfo, err := db.Prepare(`UPDATE product_info 
 								SET sku = ?, 
 									name = ?,
