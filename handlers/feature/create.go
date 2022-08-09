@@ -8,5 +8,5 @@ import (
 
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
 	data := make(map[string]string)
-	render.RenderTemplate(w, "edit", data)
+	render.RenderTemplate(w, "create", data)
 }

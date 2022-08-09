@@ -23,7 +23,8 @@ func SaveUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	brand := r.FormValue("brand")
 	image := r.FormValue("image")
 
-	db, _ := repo.OpenDb()
+	db, err := repo.OpenDb()
+	errorx.CheckErr(err)
 	updateInfo, err := db.Prepare(`UPDATE product_info 
 								SET sku = ?, 
 									name = ?,

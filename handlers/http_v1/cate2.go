@@ -28,11 +28,7 @@ func Cate2Handler(w http.ResponseWriter, r *http.Request) {
 				cate1, cate2, image
 		FROM product_info 
 		WHERE 1=1
-		AND (
-		CASE
-			WHEN cate2 NOT LIKE '%-%' THEN LOWER(REPLACE(REPLACE(cate2, ' - ', '-'), ' ', '-')) = ?
-			ELSE LOWER(REPLACE(REPLACE(cate2, ' - ', '-'), ' ', '-')) = ?
-		END)`, cate2, cate2)
+		AND LOWER(REPLACE(REPLACE(cate2, ' - ', '-'), ' ', '-')) = ?`, cate2)
 	errorx.CheckErr(err)
 	defer rows.Close()
 

@@ -21,16 +21,13 @@ func CateHandler(w http.ResponseWriter, r *http.Request) {
 	cate_report := r.URL.Path[len("/product_list/c/"):]
 
 	db, err := repo.OpenDb()
+	errorx.CheckErr(err)
 	rows, err := db.Query(`
 		SELECT DISTINCT id, name, price, cate_report, sub_cate_report,
 				cate1, cate2, image
 		FROM product_info 
 		WHERE 1=1
-		AND (
-		CASE
-			WHEN cate_report NOT LIKE '%-%' THEN LOWER(REPLACE(REPLACE(cate_report, ' - ', '-'), ' ', '-')) = ?
-			ELSE LOWER(REPLACE(REPLACE(cate_report, ' - ', '-'), ' ', '-')) = ?
-		END)`, cate_report, cate_report)
+		AND LOWER(REPLACE(REPLACE(cate_report, ' - ', '-'), ' ', '-')) = ?`, cate_report)
 	errorx.CheckErr(err)
 	defer rows.Close()
 
