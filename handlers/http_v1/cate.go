@@ -1,18 +1,26 @@
-package http
+package http_v1
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/noac178/1stProjectGolang/entity"
+	"github.com/noac178/1stProjectGolang/pkg/errorx"
+	"github.com/noac178/1stProjectGolang/pkg/pagepath"
+	"github.com/noac178/1stProjectGolang/pkg/render"
+	"github.com/noac178/1stProjectGolang/repo"
+)
 
 func FilterCateHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	cate_report := r.Form.Get("cate_report")
 
-	http.Redirect(w, r, "/product_list/c/"+CreatePagePath(cate_report), http.StatusFound)
+	http.Redirect(w, r, "/product_list/c/"+pagepath.CreatePagePath(cate_report), http.StatusFound)
 }
 
 func CateHandler(w http.ResponseWriter, r *http.Request) {
 	cate_report := r.URL.Path[len("/product_list/c/"):]
 
-	db, err := OpenDb()
+	db, err := repo.OpenDb()
 	rows, err := db.Query(`
 		SELECT DISTINCT id, name, price, cate_report, sub_cate_report,
 				cate1, cate2, image
@@ -23,22 +31,22 @@ func CateHandler(w http.ResponseWriter, r *http.Request) {
 			WHEN cate_report NOT LIKE '%-%' THEN LOWER(REPLACE(REPLACE(cate_report, ' - ', '-'), ' ', '-')) = ?
 			ELSE LOWER(REPLACE(REPLACE(cate_report, ' - ', '-'), ' ', '-')) = ?
 		END)`, cate_report, cate_report)
-	CheckErr(err)
+	errorx.CheckErr(err)
 	defer rows.Close()
 
-	var ProductList []ProductInfo
+	var ProductList []entity.ProductInfo
 
 	for rows.Next() {
-		var p ProductInfo
+		var p entity.ProductInfo
 
 		err := rows.Scan(&p.Id, &p.Name, &p.Price, &p.CateReport, &p.SubCateReport,
 			&p.Cate1, &p.Cate2, &p.Image)
-		CheckErr(err)
+		errorx.CheckErr(err)
 
 		ProductList = append(ProductList, p)
 	}
 	err = rows.Err()
-	CheckErr(err)
+	errorx.CheckErr(err)
 
 	query := `
 		SELECT
@@ -52,9 +60,9 @@ func CateHandler(w http.ResponseWriter, r *http.Request) {
 			ELSE LOWER(REPLACE(REPLACE(cate_report, ' - ', '-'), ' ', '-')) = ?
 		END)`
 
-	var p ProductInfo
+	var p entity.ProductInfo
 	err = db.QueryRow(query, cate_report, cate_report).Scan(&p.CateReport)
-	CheckErr(err)
+	errorx.CheckErr(err)
 
 	type Page struct {
 		CateEng       string
@@ -65,7 +73,7 @@ func CateHandler(w http.ResponseWriter, r *http.Request) {
 		Cate1         string
 		Cate2Eng      string
 		Cate2         string
-		ProductLists  []ProductInfo
+		ProductLists  []entity.ProductInfo
 	}
 
 	page := &Page{
@@ -74,5 +82,5 @@ func CateHandler(w http.ResponseWriter, r *http.Request) {
 		CateReport:   p.CateReport,
 	}
 
-	RenderTemplate(w, "product_list_cate", page)
+	render.RenderTemplate(w, "product_list_cate", page)
 }

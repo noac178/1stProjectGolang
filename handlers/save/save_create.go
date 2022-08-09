@@ -2,9 +2,11 @@ package save
 
 import (
 	"net/http"
+
+	"github.com/noac178/1stProjectGolang/repo"
 )
 
-func saveCreateHandler(w http.ResponseWriter, r *http.Request) {
+func SaveCreateHandler(w http.ResponseWriter, r *http.Request) {
 	sku := r.FormValue("sku")
 	name := r.FormValue("name")
 	price := r.FormValue("price")
@@ -18,7 +20,7 @@ func saveCreateHandler(w http.ResponseWriter, r *http.Request) {
 	brand := r.FormValue("brand")
 	image := r.FormValue("image")
 
-	db, _ := openDb()
+	db, _ := repo.OpenDb()
 	db.Exec(`INSERT INTO product_info (sku, name, price, number, cate_report, sub_cate_report, cate1, cate2, color, size, brand, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		sku, name, price, number, cate_report, sub_cate_report, cate1, cate2, color, size, brand, image)
 

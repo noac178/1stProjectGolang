@@ -1,8 +1,14 @@
 package save
 
-import "net/http"
+import (
+	"Minipj/1stProjectGolang/pkg/errorx"
+	"net/http"
 
-func saveUpdateHandler(w http.ResponseWriter, r *http.Request) {
+	"github.com/noac178/1stProjectGolang/pkg/errorx"
+	"github.com/noac178/1stProjectGolang/repo"
+)
+
+func SaveUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	product_id := r.URL.Path[len("/save_update/"):]
 
 	sku := r.FormValue("sku")
@@ -18,7 +24,7 @@ func saveUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	brand := r.FormValue("brand")
 	image := r.FormValue("image")
 
-	db, err := openDb()
+	db, err := repo.OpenDb()
 	updateInfo, err := db.Prepare(`UPDATE product_info 
 								SET sku = ?, 
 									name = ?,
@@ -33,11 +39,11 @@ func saveUpdateHandler(w http.ResponseWriter, r *http.Request) {
 									brand = ?,
 									image = ?
 								WHERE id = ?`)
-	checkErr(err)
+	errorx.CheckErr(err)
 
 	_, err1 := updateInfo.Exec(sku, name, price, number, cate_report, sub_cate_report,
 		cate1, cate2, color, size, brand, image, product_id)
-	checkErr(err1)
+	errorx.CheckErr(err1)
 	updateInfo.Close()
 
 	http.Redirect(w, r, "/product_list", http.StatusFound)
